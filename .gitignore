@@ -8,7 +8,7 @@ wheels/
 .python-version
 .env
 uv.lock
-
+trash
 # Virtual environments
 .venv
 
