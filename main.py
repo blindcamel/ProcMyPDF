@@ -10,6 +10,7 @@ from enum import Enum
 from pathlib import Path
 
 # Third-party imports
+import ocrmypdf
 import fitz  # PyMuPDF
 import numpy as np
 import pytesseract
@@ -154,45 +155,40 @@ async def process_pdf(file_path: Path) -> dict:
     """
     logger.info(f"Processing file: {file_path}")
     try:
-        doc = fitz.open(str(file_path))
-        page_count = len(doc)
+        # Create temporary file path for OCR output
+        temp_path = file_path.parent / f"ocr_{file_path.name}"
         
-        # Try direct text extraction first
+        # Run OCR, ocrmypdf will only OCR pages that need it
+        ocrmypdf.ocr(str(file_path), str(temp_path), deskew=True)
+        
+        # Extract text from processed file
+        doc = fitz.open(str(temp_path))
         text = ""
         for page in doc:
-            page_text = page.get_text()
-            if page_text.strip():
-                text += page_text + "\n"
-        
-        if text.strip():
-            doc.close()
-            return {
-                "text": text.strip(),
-                "source": "direct",
-                "page_count": page_count
-            }
-        
-        # Fall back to OCR if no text found
-        logger.info(f"No text found in PDF {file_path}, falling back to OCR")
-        text = ""
-        for page in doc:
-            pix = page.get_pixmap()
-            print(f"Pixmap dims: {pix.width}x{pix.height}, samples per pixel: {pix.n}")  # Debug
-
-            img = np.frombuffer(pix.samples, dtype=np.uint8).reshape(
-                pix.height, pix.width, pix.n)
-            
-            print(f"Numpy array shape: {img.shape}")  # Debug
-
-            text += pytesseract.image_to_string(img) + "\n"
-            print(f"OCR output length: {len(text)}")  # Debug
-
-        
+            text += page.get_text() + "\n"
         doc.close()
+        
+        # Cleanup temporary file
+        temp_path.unlink()
+        
         return {
             "text": text.strip(),
-            "source": "ocr",
-            "page_count": page_count
+            "source": "ocrmypdf",
+            "page_count": len(doc)
+        }
+        
+    except ocrmypdf.exceptions.PriorOcrFoundError:
+        # If OCR already exists, just extract text
+        doc = fitz.open(str(file_path))
+        text = ""
+        for page in doc:
+            text += page.get_text() + "\n"
+        doc.close()
+        
+        return {
+            "text": text.strip(),
+            "source": "existing",
+            "page_count": len(doc)
         }
         
     except Exception as e:
