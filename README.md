@@ -19,4 +19,7 @@ curl -X POST "http://localhost:8000/upload/" \
 curl -X GET "http://localhost:8000/list-files/" \
      -H "accept: application/json" \
      -H "Content-Type: multipart/form-data" \
-     -F "file=@./filein/aaa.pdf"
+
+curl -X POST http://localhost:8000/process-all/
+
+docker run -ti --rm --entrypoint sh -v ./filein:/filein_ocrmypdf sha256:9d0737314c6d414fd1226c769519a4afc14f28ebc09ed3991251ee20398344f2

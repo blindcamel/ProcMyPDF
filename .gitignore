@@ -12,6 +12,7 @@ trash
 # Virtual environments
 .venv
 
+filein
 testfiles
 *.pdf
 *.PDF
