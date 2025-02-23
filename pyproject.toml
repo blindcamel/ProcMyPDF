@@ -1,19 +1,39 @@
+[tool.setuptools.packages.find]
+where = ["."]  # Look for packages in the current directory
+exclude = ["filein", "uploads"]  # Exclude these folders
+
 [project]
-name = "pdf-proc"
+name = "procmypdf"
 version = "0.1.0"
-description = "Add your description here"
-readme = "README.md"
-requires-python = ">=3.11"
+description = "PDF processing service with invoice data extraction"
 dependencies = [
-    "fastapi>=0.115.6",
-    "mupdf>=1.21.1.20230112.1504",
-    "numpy>=2.2.1",
-    "poppler-utils>=0.1.0",
-    "pydantic>=2.10.4",
-    "pymupdf>=1.25.1",
-    "pytesseract>=0.3.13",
-    "python-magic>=0.4.27",
-    "python-multipart>=0.0.20",
-    "uvicorn>=0.34.0",
-    "watchdog>=6.0.0",
+    "annotated-types==0.7.0",
+    "anyio==4.7.0",
+    "certifi==2025.1.31",
+    "click==8.1.8",
+    "distro==1.9.0",
+    "fastapi==0.115.6",
+    "h11==0.14.0",
+    "httpcore==1.0.7",
+    "httpx==0.28.1",
+    "idna==3.10",
+    "jiter==0.8.2",
+    "mupdf==1.21.1.20230112.1504",
+    "numpy==2.2.1",
+    "openai==1.63.2",
+    "packaging==24.2",
+    "pillow==11.0.0",
+    "poppler-utils==0.1.0",
+    "pydantic==2.10.4",
+    "pydantic-core==2.27.2",
+    "pymupdf==1.25.1",
+    "pytesseract==0.3.13",
+    "python-magic==0.4.27",
+    "python-multipart==0.0.20",
+    "sniffio==1.3.1",
+    "starlette==0.41.3",
+    "tqdm==4.67.1",
+    "typing-extensions==4.12.2",
+    "uvicorn==0.34.0",
+    "watchdog==6.0.0"
 ]
